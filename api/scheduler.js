@@ -27,8 +27,7 @@ module.exports = function(req, res) {
           })
           res.json({
             body: html,
-            subject: "subject",
-            raw: "raw"
+            raw: true
           })
         }
       });
