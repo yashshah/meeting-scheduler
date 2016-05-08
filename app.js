@@ -3,7 +3,14 @@ var fs = require('fs');
 var https = require('https');
 var request = require('request');
 var moment = require('moment-timezone');
+var cors = require('cors');
 var app = express();
+
+// Since Mixmax calls this API directly from the client-side, it must be whitelisted.
+var corsOptions = {
+  origin: /^[^.\s]+\.mixmax\.com$/,
+  credentials: true
+};
 
 const USER_TIMEZONE = "Asia/Kolkata"
 const NUMBER_OF_TIME_SLOTS_REQUIRED = 3
@@ -47,30 +54,10 @@ function suggestTime(preferedTimeHash) {
   return timeSuggestions;
 }
 
-// Add headers
-app.use(function(req, res, next) {
-
-  // Website you wish to allow to connect
-  res.setHeader('Access-Control-Allow-Origin', 'https://compose.mixmax.com');
-
-  // Request methods you wish to allow
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-
-  // Request headers you wish to allow
-  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-
-  // Set to true if you need the website to include cookies in the requests sent
-  // to the API (e.g. in case you use sessions)
-  res.setHeader('Access-Control-Allow-Credentials', true);
-
-  // Pass to next layer of middleware
-  next();
-});
-
 var GoogleLocations = require('google-locations');
 var locations = new GoogleLocations('AIzaSyBBxyDwTMxzB40JWvxiHDGH7rlIOoE5eU4');
 
-app.get('/search', function(req, res) {
+app.get('/search', cors(corsOptions), function(req, res) {
   var cityObject = new Array()
   res.setHeader('Content-Type', 'application/json');
   locations.autocomplete({ input: req.param('text'), types: "(cities)" }, function(err, response) {
@@ -91,7 +78,7 @@ app.get('/search', function(req, res) {
   });
 })
 
-app.get('/calendar', function(req, res) {
+app.get('/calendar', cors(corsOptions), function(req, res) {
   var suggestedTimeSlots;
   locations.autocomplete({ input: req.param('text'), types: "(cities)" }, function(err, response) {
     locations.details({ placeid: response.predictions[0].place_id }, function(err, response) {
