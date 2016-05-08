@@ -1,0 +1,28 @@
+{
+  "name": "meeting-scheduler",
+  "version": "0.0.1",
+  "description": "Mixmax integration for scheduling meeting with one command",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/yashshah/meeting-scheduler.git"
+  },
+  "author": "Yash Shah <mail@yashshah.com>",
+  "homepage": "https://github.com/yashshah/meeting-scheduler",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.7.1",
+    "express": "^4.13.3",
+    "fs": "0.0.2",
+    "google-locations": "^0.2.0",
+    "https": "^1.0.0",
+    "moment-timezone": "^0.5.4",
+    "request": "^2.64.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.9.2"
+  }
+}
