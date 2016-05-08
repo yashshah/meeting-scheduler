@@ -44,8 +44,8 @@ function getFeasibleTimeSlots(attendeeTimeZone) {
   var userTimeInAttendeeTimeZone = CAL_AVAILIBILITY_TIME_START.clone().tz(attendeeTimeZone)
   // Loop through all the time slots where user is available and if it belongs to Attendee workable hours
   for (i = 0; i < userAvailabilityInHours * 2; i++) {
-    if (userTimeInAttendeeTimeZone.format('HHmm') >= attendeeAvailibilityTimeStart.format('HHmm') && userTimeInAttendeeTimeZone.format('HHmm') <= attendeeAvailibilityEndTime.format('HHmm')) {
       feasibleHours[userTimeInAttendeeTimeZone.format('HH:mm z')] = 1
+    if (userTimeInAttendeeTimeZone.format('HHmm') >= attendeeAvailibilityStartTime.format('HHmm') && userTimeInAttendeeTimeZone.format('HHmm') <= attendeeAvailibilityEndTime.format('HHmm')) {
     }
     // Increasing the time by 30 minutes in each iteration
     userTimeInAttendeeTimeZone = userTimeInAttendeeTimeZone.add(30, "minutes")
