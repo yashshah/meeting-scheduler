@@ -1,54 +1,52 @@
 var express = require('express');
-var app = express();
 var fs = require('fs');
 var https = require('https');
 var request = require('request');
 var moment = require('moment-timezone');
+var app = express();
 
-var jun = moment.tz("22:00", 'HH', "Asia/Kolkata").tz("Europe/Berlin").format('HH:mm a');
-console.log(jun)
-
-var end = moment(new Date(end)).format('HH:mm');
-const CAL_PREFER_TIME_START = 2
-const CAL_PREFER_TIME_END = 16
 const USER_TIMEZONE = "Asia/Kolkata"
-const NUMBER_OF_TIME_SLOT_REQUIRED = 3
+const NUMBER_OF_TIME_SLOTS_REQUIRED = 3
+const CAL_AVAILIBILITY_TIME_START = moment.tz("08:00", 'HH:mm', USER_TIMEZONE);
+const CAL_AVAILIBILITY_TIME_END = moment.tz("22:00", 'HH:mm', USER_TIMEZONE);
 
-const CLIENT_PREFER_TIME_START = 10
-const CLIENT_PREFER_TIME_END = 21
-
-var preferedTimeHash = {}; // New object
-for (i = 0; i < 24; i++) {
-  if (i >= CAL_PREFER_TIME_START && i <= CAL_PREFER_TIME_END && i >= CLIENT_PREFER_TIME_START && i <= CLIENT_PREFER_TIME_END) {
-    preferedTimeHash[i] = 1
-  } else
-    preferedTimeHash[i] = 0
+function calculatePreferedTime(attendeeTimeZone) {
+  var preferedTimeHash = {}; // New object
+  var userAvailabilityInHours = moment.duration(CAL_AVAILIBILITY_TIME_END.diff(CAL_AVAILIBILITY_TIME_START)).asHours()
+  var attendeeAvailibilityTimeStart = moment.tz("08:00", 'HH:mm', attendeeTimeZone);
+  var attendeeAvailibilityTimeEnd = moment.tz("22:00", 'HH:mm', attendeeTimeZone);
+  var userTimeInAttendeeTimeZone = CAL_AVAILIBILITY_TIME_START.clone().tz(attendeeTimeZone)
+  for (i = 0; i < userAvailabilityInHours * 2; i++) {
+    if (userTimeInAttendeeTimeZone.format('HHmm') >= attendeeAvailibilityTimeStart.format('HHmm') && userTimeInAttendeeTimeZone.format('HHmm') <= attendeeAvailibilityTimeEnd.format('HHmm')) {
+      preferedTimeHash[userTimeInAttendeeTimeZone.format('HH:mm z')] = 1
+    }
+    userTimeInAttendeeTimeZone = userTimeInAttendeeTimeZone.add(30, "minutes")
+  }
+  return suggestTime(preferedTimeHash)
 }
-preferedTimeHash[2] = 1
-suggestTime(preferedTimeHash)
+
 
 function suggestTime(preferedTimeHash) {
   var minList = [00, 15, 30, 45]
-  var tempList = []
-  for (hour in preferedTimeHash) {
-    if (preferedTimeHash[hour] > 0)
-      tempList.push([parseInt(hour), preferedTimeHash[hour]])
+  var timeSuggestions = []
+  var timeSlots = []
+  for (slot in preferedTimeHash) {
+    timeSlots.push([slot, preferedTimeHash[slot]])
   }
-  var suggestTime = []
+  timeSlotsLength = timeSlots.length
 
-  hourListLength = tempList.length
-
-  for (i = 0; i < NUMBER_OF_TIME_SLOT_REQUIRED; i++) {
-    slot = (hourListLength / NUMBER_OF_TIME_SLOT_REQUIRED)
+  for (i = 0; i < NUMBER_OF_TIME_SLOTS_REQUIRED; i++) {
+    slot = (timeSlotsLength / NUMBER_OF_TIME_SLOTS_REQUIRED)
     min = Math.round(i * slot)
-    max = Math.min(Math.round((i + 1) * slot), hourListLength)
-    list = tempList.slice(min, max).sort(function(a, b) {
+    max = Math.min(Math.round((i + 1) * slot), timeSlotsLength)
+    list = timeSlots.slice(min, max).sort(function(a, b) {
       return a[1] - b[1]
     })
-    suggestTime.push(list[Math.floor(Math.random() * list.length)][0])
+    timeSuggestions.push(list[Math.floor(Math.random() * list.length)][0])
   }
-  console.log(suggestTime)
+  return timeSuggestions;
 }
+
 // Add headers
 app.use(function(req, res, next) {
 
@@ -76,24 +74,45 @@ app.get('/search', function(req, res) {
   var cityObject = new Array()
   res.setHeader('Content-Type', 'application/json');
   locations.autocomplete({ input: req.param('text'), types: "(cities)" }, function(err, response) {
-    res.write(JSON.stringify(response.predictions.map(function(response) {
-      return { title: response.description };
-    })))
+    if (response.predictions.length == 0) {
+      res.json([{
+        title: '<i>(Enter attendee\'s city name)</i>',
+        text: ''
+      }]);
+    } else {
+      res.write(JSON.stringify(response.predictions.map(function(response) {
+        return {
+          title: response.description,
+          text: response.description
+        };
+      })))
+    }
     res.end();
   });
 })
 
 app.get('/calendar', function(req, res) {
+  var suggestedTimeSlots;
   locations.autocomplete({ input: req.param('text'), types: "(cities)" }, function(err, response) {
     locations.details({ placeid: response.predictions[0].place_id }, function(err, response) {
       request('https://api.timezonedb.com/?lat=' + response.result.geometry.location.lat + '&lng=' + response.result.geometry.location.lng + '&key=I16KGCYBRXQ8&format=json', function(error, response, body) {
         if (!error && response.statusCode == 200) {
-          console.log(body); // Show the HTML for the Modulus homepage.
+          console.log("Time zone is ", JSON.parse(body).zoneName)
+          suggestedTimeSlots = calculatePreferedTime(JSON.parse(body).zoneName)
+          var html = "Let me know which time works for you: " + suggestedTimeSlots.map(function(response) {
+            return " " + response
+          })
+          res.json({
+            body: html,
+            subject: "subject",
+            raw: "raw"
+          })
+          console.log("Here are my suggestions: ", suggestedTimeSlots)
         }
       });
     });
   });
-  res.write(JSON.stringify({ body: 0 }))
+  console.log(suggestedTimeSlots)
 })
 
 var options = {
