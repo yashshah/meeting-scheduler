@@ -14,11 +14,15 @@
   "homepage": "https://github.com/yashshah/meeting-scheduler",
   "license": "MIT",
   "dependencies": {
+    "appbase-js": "^0.10.7",
+    "config": "^1.20.1",
     "cors": "^2.7.1",
     "express": "^4.13.3",
     "fs": "0.0.2",
     "google-locations": "^0.2.0",
+    "googleapis": "^5.2.1",
     "https": "^1.0.0",
+    "moment-range": "^2.2.0",
     "moment-timezone": "^0.5.4",
     "request": "^2.64.0"
   },
