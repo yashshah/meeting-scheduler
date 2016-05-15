@@ -1,0 +1,18 @@
+{
+  "google": {
+    "client_id": "client_id",
+    "client_secret": "client_secret",
+    "redirect_uri": "your_server_url",
+    "access_type": "offline",
+    "scopes": [
+      "https://www.googleapis.com/auth/plus.me",
+      "https://www.googleapis.com/auth/calendar"
+    ]
+  },
+  "appbase": {
+    "appname": "appbase_app_name",
+    "username": "appbase_username",
+    "password": "appbase_password",
+    "type": "token"
+  }
+}
