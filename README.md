@@ -7,7 +7,7 @@ The details may change, but for those of us who schedule international meetings 
 This integration handles scheduling meetings in different timezone efficiently. With one command scheduling, you can book meetings in one email instead of ten. Your just have to select the attendee's city, and integration will do the rest. No more back and forth.
 
 
-![alt tag](http://g.recordit.co/undE6k3caS.gif)  
+![alt tag](http://g.recordit.co/94JvhQ91M7.gif)  
 
 ## Running locally
 Install the node packages by running following command:
