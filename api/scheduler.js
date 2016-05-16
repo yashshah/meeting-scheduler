@@ -93,7 +93,7 @@ function getFeasibleTimeSlots(attendeeTimeZone, busySlots, userStartDate) {
       if (userTimeInAttendeeTimeZone.format('HHmm') >= attendeeAvailibilityStartTime.format('HHmm') && userTimeInAttendeeTimeZone.format('HHmm') <= attendeeAvailibilityEndTime.format('HHmm')) {
         var slotFreeFlag = 1;
         for (var j = 0; j < busySlots.length; j++) {
-          // var event = busySlots[j];
+          var event = busySlots[j];
           // var event_id = event.id;
           // var summary = event.summary;
           var start = event.start.dateTime || event.start.date;
