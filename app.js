@@ -11,6 +11,7 @@ var corsOptions = {
   credentials: true
 };
 
+app.use(express.static(__dirname + '/public'));
 app.get('/search', cors(corsOptions), require('./api/search'))
 app.get('/scheduler', cors(corsOptions), require('./api/scheduler'))
 app.get('/login', cors(corsOptions), require('./api/login'))
