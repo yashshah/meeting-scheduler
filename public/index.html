@@ -140,6 +140,27 @@
   <!--  Scripts-->
   <script src="min/plugin-min.js"></script>
   <script src="min/custom-min.js"></script>
+  <script>
+  function initAutocomplete() {
+    var attendee_input = /** @type {!HTMLInputElement} */ (
+      document.getElementById('attendee_location'));
+    var user_input = /** @type {!HTMLInputElement} */ (
+      document.getElementById('user_location'));
+
+    // Overwrite Google default placeholders
+    attendee_input.placeholder = ""
+    user_input.placeholder = ""
+
+    var attendee_autocomplete = new google.maps.places.Autocomplete(attendee_input, {
+      types: ['(cities)']
+    });
+    var user_autocomplete = new google.maps.places.Autocomplete(user_input, {
+      types: ['(cities)']
+    });
+
+  }
+  </script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBBxyDwTMxzB40JWvxiHDGH7rlIOoE5eU4&libraries=places&callback=initAutocomplete" async defer></script>
 </body>
 
 </html>
