@@ -26,7 +26,7 @@ function updateAccessToken(tokens, response) {
     body: tokens
   };
   appbase.ref.index(requestObject).on('data', function(res) {
-    response.redirect('/dashboard.html')
+    response.redirect('/dashboard')
   }).on('error', function(error) {
     console.log('error updating table');
     console.log(error);
