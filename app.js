@@ -14,8 +14,6 @@ var corsOptions = {
 app.get('/search', cors(corsOptions), require('./api/search'))
 app.get('/scheduler', cors(corsOptions), require('./api/scheduler'))
 app.get('/login', cors(corsOptions), require('./api/login'))
-app.get('/', cors(corsOptions), require('./api/auth'))
-
 var options = {
   key: fs.readFileSync('server.key'),
   cert: fs.readFileSync('server.crt')
