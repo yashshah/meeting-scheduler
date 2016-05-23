@@ -8,8 +8,10 @@ module.exports = function(req, res) {
 
     if (!err) {
       updateAccessToken(tokens, res);
-      // req.session.loginToken = tokens
-
+      var jwtToken = jwt.sign(tokens, "your_secret", {
+        expiresIn: '7d' // expires in 24 hours
+      });
+      req.session.loginToken = jwtToken
     } else {
       res.send('Error getting token');
       console.log('Error getting token');

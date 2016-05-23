@@ -11,10 +11,22 @@ var corsOptions = {
   credentials: true
 };
 
+// Secret key for token generation
+var secret = 'secret_key'
+// app.set('jwtTokenSecret', '');
+// Apply secret key
+// app.set('superSecret', secret);
+app.use(cookieSession({
+    secret: secret,
+    name: 'session'
+}));
+
 app.use(express.static(__dirname + '/public'));
-app.get('/search', cors(corsOptions), require('./api/search'))
-app.get('/scheduler', cors(corsOptions), require('./api/scheduler'))
 app.get('/login', cors(corsOptions), require('./api/login'))
+app.get('/search', cors(corsOptions), require('./api/search'))
+app.use(require('./common/authMiddleware.js'))
+app.get('/scheduler', cors(corsOptions), require('./api/scheduler'))
+app.use('/dashboard', express.static(__dirname + '/public/dashboard.html'));
 var options = {
   key: fs.readFileSync('server.key'),
   cert: fs.readFileSync('server.crt')
