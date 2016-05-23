@@ -1,6 +1,6 @@
 var google = require('../common/google');
 var appbase = require('../common/appbase');
-
+var jwt = require('jsonwebtoken');
 
 module.exports = function(req, res) {
   var code = req.query.code;
