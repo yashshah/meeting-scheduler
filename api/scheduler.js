@@ -28,7 +28,6 @@ module.exports = function(req, res) {
           var userEndDate = CAL_AVAILIBILITY_TIME_END.clone().add(NUMBER_OF_DATES_REQUIRED, "days")
           var attendeeTimeZone = JSON.parse(body).zoneName
           var tokens = req.decoded
-          console.log(tokens)
           google.oauth2Client.setCredentials({
             'access_token': tokens.access_token,
             'refresh_token': tokens.refresh_token
@@ -53,9 +52,17 @@ module.exports = function(req, res) {
             for (k = 0; k < NUMBER_OF_DATES_REQUIRED; k++) {
               // Get the feasiable time slots in the attendee's timezone
               feasibleTimeSlots = getFeasibleTimeSlots(attendeeTimeZone, response.items, userStartDate);
-              html = html + userStartDate.format('ddd, MMM Do') + ': ' + feasibleTimeSlots.map(function(response) {
-                return " " + response;
-              }) + "</br>"
+              if(feasibleTimeSlots.length){
+                feasibleTimeSlots.sort(function(a, b) {
+                  return new Date('1970/01/01 ' + a) - new Date('1970/01/01 ' + b);
+                });
+                html = html + userStartDate.format('ddd, MMM Do') + ': ' + feasibleTimeSlots.map(function(response) {
+                  return " " + response;
+                }) + "</br>"
+              }
+              else{
+                html = html + userStartDate.format('ddd, MMM Do') + ': No Available slots</br>'
+              }
               userStartDate = userStartDate.add(1, "days")
             }
             res.json({
@@ -76,37 +83,33 @@ function getFeasibleTimeSlots(attendeeTimeZone, busySlots, userStartDate) {
   var attendeeAvailibilityStartTime = moment.tz("08:00", 'HH:mm', attendeeTimeZone);
   var attendeeAvailibilityEndTime = moment.tz("22:00", 'HH:mm', attendeeTimeZone);
 
-  if (busySlots.length == 0) {
-    console.log('No upcoming events found.');
-  } else {
-    console.log('Upcoming events: ', busySlots.length);
-    var userTimeInAttendeeTimeZone = userStartDate.clone().tz(attendeeTimeZone);
-    // Loop through all the time slots where user is available and if it belongs to Attendee workable hours
-    for (var i = 0; i < userAvailabilityInHours * 2; i++) {
-      if (userTimeInAttendeeTimeZone.format('HHmm') >= attendeeAvailibilityStartTime.format('HHmm') && userTimeInAttendeeTimeZone.format('HHmm') <= attendeeAvailibilityEndTime.format('HHmm')) {
-        var slotFreeFlag = 1;
-        for (var j = 0; j < busySlots.length; j++) {
-          var event = busySlots[j];
-          // var event_id = event.id;
-          // var summary = event.summary;
-          var start = event.start.dateTime || event.start.date;
-          var end = event.end.dateTime || event.end.date;
-          var range = moment.range(start, end);
-          // console.log(start, end, userTimeInAttendeeTimeZone.format(), range.contains(userTimeInAttendeeTimeZone))
-          if (range.contains(userTimeInAttendeeTimeZone)) {
-            slotFreeFlag = 0
-              // console.log("Removed: ", userTimeInAttendeeTimeZone.format('HH:mm'))
-            break;
-          }
-        }
-        if (slotFreeFlag) {
-          feasibleHours[userTimeInAttendeeTimeZone.format('hh:mm a')] = 1;
+  var userTimeInAttendeeTimeZone = userStartDate.clone().tz(attendeeTimeZone);
+  // Loop through all the time slots where user is available and if it belongs to Attendee workable hours
+  for (var i = 0; i < userAvailabilityInHours * 2; i++) {
+    if (userTimeInAttendeeTimeZone.format('HHmm') >= attendeeAvailibilityStartTime.format('HHmm') && userTimeInAttendeeTimeZone.format('HHmm') <= attendeeAvailibilityEndTime.format('HHmm')) {
+      var slotFreeFlag = 1;
+      for (var j = 0; j < busySlots.length; j++) {
+        var event = busySlots[j];
+        // var event_id = event.id;
+        // var summary = event.summary;
+        var start = event.start.dateTime || event.start.date;
+        var end = event.end.dateTime || event.end.date;
+        var range = moment.range(start, end);
+        // console.log(start, end, userTimeInAttendeeTimeZone.format(), range.contains(userTimeInAttendeeTimeZone))
+        if (range.contains(userTimeInAttendeeTimeZone)) {
+          slotFreeFlag = 0
+            // console.log("Removed: ", userTimeInAttendeeTimeZone.format('HH:mm'))
+          break;
         }
       }
-      // Increasing the time by 30 minutes in each iteration
-      userTimeInAttendeeTimeZone = userTimeInAttendeeTimeZone.add(30, "minutes");
+      if (slotFreeFlag) {
+        feasibleHours[userTimeInAttendeeTimeZone.format('hh:mm a')] = 1;
+      }
     }
+    // Increasing the time by 30 minutes in each iteration
+    userTimeInAttendeeTimeZone = userTimeInAttendeeTimeZone.add(30, "minutes");
   }
+  console.log(feasibleHours)
   return calculatFeasibleTimeSlots(feasibleHours);
 }
 
@@ -142,10 +145,8 @@ function calculatFeasibleTimeSlots(feasibleHours) {
         return a[1] - b[1];
       })
       // Pick the time slot from each slot group
-    feasibleSlots.push(sortedSlotGroup[Math.floor(Math.random() * sortedSlotGroup.length)][0]);
+    if(sortedSlotGroup.length)
+      feasibleSlots.push(sortedSlotGroup[Math.floor(Math.random() * sortedSlotGroup.length)][0]);
   }
-  feasibleSlots.sort(function(a, b) {
-    return new Date('1970/01/01 ' + a) - new Date('1970/01/01 ' + b);
-  });
   return feasibleSlots;
 };
