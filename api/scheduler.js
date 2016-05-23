@@ -27,48 +27,41 @@ module.exports = function(req, res) {
           var userStartDate = CAL_AVAILIBILITY_TIME_START.clone().add(1, "days")
           var userEndDate = CAL_AVAILIBILITY_TIME_END.clone().add(NUMBER_OF_DATES_REQUIRED, "days")
           var attendeeTimeZone = JSON.parse(body).zoneName
-          var getRequestObject = {
-            type: appbase.config.type,
-            id: 'X1'
-          };
-          // Get the tokens from Appbase
-          appbase.ref.get(getRequestObject).on('data', function(results) {
-            var tokens = results._source;
-            google.oauth2Client.setCredentials({
-              'access_token': tokens.access_token,
-              'refresh_token': tokens.refresh_token
-            });
-            // Get the events from the google calendar
-            google.calendar.events.list({
-              auth: google.oauth2Client,
-              calendarId: 'primary',
-              timeMin: userStartDate.format(),
-              timeMax: userEndDate.format(),
-              maxResults: 250,
-              singleEvents: true,
-              orderBy: 'startTime'
-            }, function(err, response) {
-              if (err) {
-                console.log('The API returned an error: ' + err);
-              }
-              // Using Mixmax SDK for displaying the slots in the Mixmax
-              var html = "Let me know which time works for you in " + moment.tz(attendeeTimeZone).format('z') + ": </br>";
-              // Get feasiable time slots for preferred number of dates
-              for (k = 0; k < NUMBER_OF_DATES_REQUIRED; k++) {
-                // Get the feasiable time slots in the attendee's timezone
-                feasibleTimeSlots = getFeasibleTimeSlots(attendeeTimeZone, response.items, userStartDate);
-                html = html + userStartDate.format('ddd, MMM Do') + ': ' + feasibleTimeSlots.map(function(response) {
-                  return " " + response;
-                }) + "</br>"
-                userStartDate = userStartDate.add(1, "days")
-              }
-              res.json({
-                body: html,
-                raw: true
-              })
-            });
-          }).on('error', function(error) {
-            console.log(error);
+          var tokens = req.decoded
+          console.log(tokens)
+          google.oauth2Client.setCredentials({
+            'access_token': tokens.access_token,
+            'refresh_token': tokens.refresh_token
+          });
+
+          // Get the events from the google calendar
+          google.calendar.events.list({
+            auth: google.oauth2Client,
+            calendarId: 'primary',
+            timeMin: userStartDate.format(),
+            timeMax: userEndDate.format(),
+            maxResults: 250,
+            singleEvents: true,
+            orderBy: 'startTime'
+          }, function(err, response) {
+            if (err) {
+              console.log('The API returned an error: ' + err);
+            }
+            // Using Mixmax SDK for displaying the slots in the Mixmax
+            var html = "Let me know which time works for you in " + moment.tz(attendeeTimeZone).format('z') + ": </br>";
+            // Get feasiable time slots for preferred number of dates
+            for (k = 0; k < NUMBER_OF_DATES_REQUIRED; k++) {
+              // Get the feasiable time slots in the attendee's timezone
+              feasibleTimeSlots = getFeasibleTimeSlots(attendeeTimeZone, response.items, userStartDate);
+              html = html + userStartDate.format('ddd, MMM Do') + ': ' + feasibleTimeSlots.map(function(response) {
+                return " " + response;
+              }) + "</br>"
+              userStartDate = userStartDate.add(1, "days")
+            }
+            res.json({
+              body: html,
+              raw: true
+            })
           });
         }
       });
