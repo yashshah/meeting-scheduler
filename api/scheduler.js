@@ -8,12 +8,12 @@ require('moment-range');
 
 
 // Configure the preference of the User
-const USER_TIMEZONE = "Asia/Kolkata";
+const USER_TIMEZONE = "America/Los_Angeles";
 const NUMBER_OF_TIME_SLOTS_REQUIRED = 3;
 const NUMBER_OF_DATES_REQUIRED = 4;
 // Set the user's workable hours
 const CAL_AVAILIBILITY_TIME_START = moment.tz("08:00", 'HH:mm', USER_TIMEZONE);
-const CAL_AVAILIBILITY_TIME_END = moment.tz("22:00", 'HH:mm', USER_TIMEZONE);
+const CAL_AVAILIBILITY_TIME_END = moment.tz("21:00", 'HH:mm', USER_TIMEZONE);
 
 // The API that returns the in-email representation.
 module.exports = function(req, res) {
