@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#2196F3">
+  <title>Meeting Scheduler with Mixmax - Dashboard</title>
+  <style type="text/css">
+  html,
+  body,
+  .container-table {
+    height: 100%;
+  }
+  
+  .container-table {
+    display: table;
+  }
+  
+  .vertical-center-row {
+    display: table-cell;
+    vertical-align: middle;
+  }
+  </style>
+  <!-- CSS  -->
+  <link href="min/plugin-min.css" type="text/css" rel="stylesheet">
+  <link href="min/custom-min.css" type="text/css" rel="stylesheet">
+</head>
+
+<body id="top" class="grey lighten-5">
+  <div class="container container-table">
+    <div class="row vertical-center-row">
+      <div class="col s12 m8 offset-m2">
+        <div class="card">
+          <div class="card-content grey-text">
+            <h4 class="card-title black-text center">Set Preferences</h4>
+            <div class="row">
+              <form class="col s12">
+                <div class="row">
+                  <div class="input-field col s12">
+                    <input id="city_name" type="text" class="validate">
+                    <label for="city_name">Enter your city name</label>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="input-field col s6">
+                    <select class="browser-default">
+                      <option value="" disabled selected>Select your Starting time</option>
+                      <option value="1">Option 1</option>
+                      <option value="2">Option 2</option>
+                      <option value="3">Option 3</option>
+                    </select>
+                  </div>
+                  <div class="input-field col s6">
+                    <select>
+                      <option value="" disabled selected>Select your Ending time</option>
+                      <option value="1">Option 1</option>
+                      <option value="2">Option 2</option>
+                      <option value="3">Option 3</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="input-field col s12">
+                    <input value="4" id="days_number" type="text" class="validate">
+                    <label for="days_number">How many days you want to suggest?</label>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="input-field col s12">
+                    <input value="3" id="slot_number" type="text" class="validate">
+                    <label for="slot_number">How many slots do you want to suggest?</label>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="row center">
+            <a class="waves-effect waves-light btn-large blue center">Save Perference</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--  Scripts-->
+  <script src="min/plugin-min.js"></script>
+  <script src="min/custom-min.js"></script>
+</body>
+
+</html>
