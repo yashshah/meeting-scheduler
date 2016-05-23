@@ -3,6 +3,7 @@ var fs = require('fs');
 var https = require('https');
 var cors = require('cors');
 var app = express();
+var cookieSession = require('cookie-session');
 
 // Since Mixmax calls this API directly from the client-side, it must be whitelisted.
 var corsOptions = {
