@@ -115,6 +115,14 @@ function calculatFeasibleTimeSlots(feasibleHours) {
   // var minList = [00, 15, 30, 45]
   var feasibleSlots = [];
   var feasibleHoursArray = [];
+
+  // Check if feasible hours are less than slots required, then print them as it is
+  if(feasibleHours.length <= NUMBER_OF_TIME_SLOTS_REQUIRED){
+    for (hour in feasibleHours) {
+      feasibleSlots.push(hour);
+    }
+    return feasibleHoursArray;
+  }
   // Converting the feasiableHours object into an array
   for (hour in feasibleHours) {
     feasibleHoursArray.push([hour, feasibleHours[hour]]);
