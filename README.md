@@ -30,7 +30,6 @@ openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
 More information [here](http://www.sitepoint.com/how-to-use-ssltls-with-node-js/)     
 
 ## Roadmap
-* Design the Dashboard where prefrences can be configured
 * Multiple attendee option
 * Using promises instead of Callbacks
 * Release npm package
