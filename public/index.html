@@ -77,7 +77,8 @@
           </div>
         </form>
       </div>
-      <div class="row" id="available-slots">
+      <div class="row center">
+        <h5 id="available-slots"> </h5>
       </div>
     </div>
   </div>
@@ -157,7 +158,27 @@
     var user_autocomplete = new google.maps.places.Autocomplete(user_input, {
       types: ['(cities)']
     });
+    var userTimezone = '';
+    var attendeeTimezone = '';
+    attendee_autocomplete.addListener('place_changed', function() {
+      var place = attendee_autocomplete.getPlace();
+      $.ajax({
+        url: 'https://api.timezonedb.com/?lat=' + place.geometry.location.lat() + '&lng=' + place.geometry.location.lng() + '&key=I16KGCYBRXQ8&format=json',
+        success: function(data) {
+          attendeeTimezone = data.zoneName
+        }
+      });
+    })
 
+    user_autocomplete.addListener('place_changed', function() {
+      var place = user_autocomplete.getPlace();
+      $.ajax({
+        url: 'https://api.timezonedb.com/?lat=' + place.geometry.location.lat() + '&lng=' + place.geometry.location.lng() + '&key=I16KGCYBRXQ8&format=json',
+        success: function(data) {
+          userTimezone = data.zoneName
+        }
+      });
+    })
   }
   </script>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBBxyDwTMxzB40JWvxiHDGH7rlIOoE5eU4&libraries=places&callback=initAutocomplete" async defer></script>
