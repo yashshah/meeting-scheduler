@@ -24,6 +24,7 @@ app.use(cookieSession({
 app.use(express.static(__dirname + '/public'));
 app.get('/login', cors(corsOptions), require('./api/login'))
 app.get('/search', cors(corsOptions), require('./api/search'))
+app.get('/slots', cors(corsOptions), require('./api/openscheduler'))
 app.use(require('./common/authMiddleware.js'))
 app.get('/scheduler', cors(corsOptions), require('./api/scheduler'))
 app.use('/dashboard', express.static(__dirname + '/public/dashboard.html'));
