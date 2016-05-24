@@ -166,6 +166,15 @@
         url: 'https://api.timezonedb.com/?lat=' + place.geometry.location.lat() + '&lng=' + place.geometry.location.lng() + '&key=I16KGCYBRXQ8&format=json',
         success: function(data) {
           attendeeTimezone = data.zoneName
+          if (userTimezone) {
+            $.ajax({
+              url: 'https://localhost:3000/slots?userTimezone=' + userTimezone + '&attendeeTimezone=' + attendeeTimezone,
+              success: function(data) {
+                $('#available-slots').html(data.body)
+                console.log(data.body)
+              }
+            });
+          }
         }
       });
     })
@@ -176,6 +185,15 @@
         url: 'https://api.timezonedb.com/?lat=' + place.geometry.location.lat() + '&lng=' + place.geometry.location.lng() + '&key=I16KGCYBRXQ8&format=json',
         success: function(data) {
           userTimezone = data.zoneName
+          if (attendeTimezone) {
+            $.ajax({
+              url: 'https://localhost:3000/slots?userTimezone=' + userTimezone + '&attendeeTimezone=' + attendeeTimezone,
+              success: function(data) {
+                $('#available-slots').html(data.body)
+                console.log(data.body)
+              }
+            });
+          }
         }
       });
     })
