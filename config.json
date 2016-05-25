@@ -14,5 +14,8 @@
     "username": "appbase_username",
     "password": "appbase_password",
     "type": "token"
+  },
+  "app": {
+    "secret": "your_secret_key_here"
   }
 }

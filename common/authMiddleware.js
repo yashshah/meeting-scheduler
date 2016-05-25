@@ -1,4 +1,5 @@
 var jwt = require('jsonwebtoken');
+var secret = require('../config').app.secret;
 
 module.exports = function(req, res, next) {
   // check header or url parameters or post parameters for token
@@ -6,7 +7,7 @@ module.exports = function(req, res, next) {
   // decode token
   if (token) {
     // verifies secret and checks exp
-    jwt.verify(token, "your_secret", function(err, decoded) {
+    jwt.verify(token, secret, function(err, decoded) {
       if (err) {
         return res.status(401).json({
           success: false,

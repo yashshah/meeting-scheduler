@@ -1,6 +1,7 @@
 var google = require('../common/google');
 var appbase = require('../common/appbase');
 var jwt = require('jsonwebtoken');
+var secret = require('../config').app.secret;
 
 module.exports = function(req, res) {
   var code = req.query.code;
@@ -8,7 +9,7 @@ module.exports = function(req, res) {
 
     if (!err) {
       updateAccessToken(tokens, res);
-      var jwtToken = jwt.sign(tokens, "your_secret", {
+      var jwtToken = jwt.sign(tokens, secret, {
         expiresIn: '7d' // expires in 24 hours
       });
       req.session.loginToken = jwtToken
