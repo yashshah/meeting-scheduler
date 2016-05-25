@@ -24,5 +24,4 @@ module.exports = function(req, res) {
   attendee.timezone = req.param('attendeeTimezone')
   user.timezone = req.param('userTimezone')
   helper.sendBestTimeSlots(res, user, attendee, config)
-
 }

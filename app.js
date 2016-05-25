@@ -4,18 +4,12 @@ var https = require('https');
 var cors = require('cors');
 var app = express();
 var cookieSession = require('cookie-session');
-
 // Since Mixmax calls this API directly from the client-side, it must be whitelisted.
 var corsOptions = {
   origin: /^[^.\s]+\.mixmax\.com$/,
   credentials: true
 };
 
-// Secret key for token generation
-var secret = 'secret_key'
-// app.set('jwtTokenSecret', '');
-// Apply secret key
-// app.set('superSecret', secret);
 app.use(cookieSession({
     secret: secret,
     name: 'session'
