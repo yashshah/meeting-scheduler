@@ -4,6 +4,9 @@ var https = require('https');
 var cors = require('cors');
 var app = express();
 var cookieSession = require('cookie-session');
+var bodyParser = require('body-parser');
+app.use(bodyParser.json()); // support json encoded bodies
+app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 // Secret key for token generation
 var secret = require('./config').app.secret
 // Since Mixmax calls this API directly from the client-side, it must be whitelisted.
