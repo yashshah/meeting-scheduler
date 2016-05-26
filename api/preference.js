@@ -1,4 +1,4 @@
 module.exports = function(req, res) {
   req.session.preferences = req.body
-  res.send('Saved!');
+  res.end('{"success" : "Updated Successfully", "status" : 200}');
 }
