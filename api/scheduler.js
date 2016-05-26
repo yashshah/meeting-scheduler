@@ -16,19 +16,22 @@ module.exports = function(req, res) {
       // Get the timezone of the attendee
       request('https://api.timezonedb.com/?lat=' + response.result.geometry.location.lat + '&lng=' + response.result.geometry.location.lng + '&key=I16KGCYBRXQ8&format=json', function(error, response, body) {
         if (!error && response.statusCode == 200) {
-
-          var config = {
-            "slots_required_number": "3",
-            "dates_required_number": "4"
+          if(!req.session.preferences){
+            res.json({
+              body: 'Please set your preferences at <a href="http://104.131.165.92:3000/dashboard">http://104.131.165.92:3000/dashboard</a>',
+              raw: true
+            })
           }
-
+          var config = {
+            "slots_required_number": req.session.preferences.config_slots,
+            "dates_required_number": req.session.preferences.config_days
+          }
           var user = {
-            "timezone": "America/Los_Angeles",
-            "available_time_start": "08:00",
-            "available_time_end": "21:00",
+            "timezone": req.session.preferences.timezone,
+            "available_time_start": req.session.preferences.user_start_time,
+            "available_time_end": req.session.preferences.user_end_time,
             "busy_slots": []
           }
-
           var attendee = {
             "timezone": "America/Los_Angeles",
             "available_time_start": "08:00",
