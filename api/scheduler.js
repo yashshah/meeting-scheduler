@@ -18,7 +18,7 @@ module.exports = function(req, res) {
         if (!error && response.statusCode == 200) {
           if(!req.session.preferences){
             res.json({
-              body: 'Please set your preferences at <a href="http://104.131.165.92:3000/dashboard">http://104.131.165.92:3000/dashboard</a>',
+              body: 'Please set your preferences at <a href="https://104.131.165.92:3000/dashboard">https://104.131.165.92:3000/dashboard</a>',
               raw: true
             })
           }
@@ -67,7 +67,7 @@ module.exports = function(req, res) {
               helper.sendBestTimeSlots(res, user, attendee, config)
             } else {
               res.json({
-                body: 'Please sign up at <a href="http://104.131.165.92:3000">http://104.131.165.92:3000</a>',
+                body: 'Please sign up at <a href="https://104.131.165.92:3000">https://104.131.165.92:3000</a>',
                 raw: true
               })
             }
