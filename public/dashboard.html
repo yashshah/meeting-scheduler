@@ -217,11 +217,12 @@
           url: 'https://127.0.0.1:3000/preference',
           data: jsonObject,
           dataType: 'json',
-          success: function(data) {
-            console.log(data)
-            $("#progressBar").hide()
-            Materialize.toast('Your preferences has been set succesfully!', 8000)
-          }
+          success: function(result) {
+            if(result.status == 200){
+              $("#progressBar").hide()
+              Materialize.toast('Your preferences has been set succesfully!', 8000)
+            }
+          },
           error: function(err) {
             console.log("Error: ", err)
           },
