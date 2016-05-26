@@ -178,6 +178,58 @@
   <!--  Scripts-->
   <script src="min/plugin-min.js"></script>
   <script src="min/custom-min.js"></script>
+  <script>
+  var userTimezone;
+
+  function initAutocomplete() {
+    var user_input = /** @type {!HTMLInputElement} */ (
+      document.getElementById('city_name'));
+    // Overwrite Google default placeholders
+    user_input.placeholder = ""
+    var user_autocomplete = new google.maps.places.Autocomplete(user_input, {
+      types: ['(cities)']
+    });
+    user_autocomplete.addListener('place_changed', function() {
+      var place = user_autocomplete.getPlace();
+      $.ajax({
+        url: 'https://api.timezonedb.com/?lat=' + place.geometry.location.lat() + '&lng=' + place.geometry.location.lng() + '&key=I16KGCYBRXQ8&format=json',
+        success: function(data) {
+          userTimezone = data.zoneName
+          console.log(userTimezone)
+        }
+      });
+    })
+  }
+  $(document).ready(function() {
+    $("#btnSubmit").click(function() {
+      var jsonObject = {
+        city: $("#city_name").val(),
+        timezone: userTimezone,
+        user_start_time: $("#start_time").val(),
+        user_end_time: $("#end_time").val(),
+        config_days: $("#days_number").val(),
+        config_slots: $("#slot_number").val()
+      }
+      if (jsonObject.city && jsonObject.user_start_time && jsonObject.user_end_time && jsonObject.config_days && jsonObject.config_slots) {
+        $("#progressBar").show()
+        $.ajax({
+          type: 'POST',
+          url: 'https://127.0.0.1:3000/preference',
+          data: jsonObject,
+          dataType: 'json',
+          success: function(data) {
+            console.log(data)
+            $("#progressBar").hide()
+            Materialize.toast('Your preferences has been set succesfully!', 8000)
+          }
+        })
+      } else {
+        Materialize.toast('Error! Please enter all the fields!', 8000)
+      }
+    });
+  });
+  </script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBBxyDwTMxzB40JWvxiHDGH7rlIOoE5eU4&libraries=places&callback=initAutocomplete" async defer></script>
 </body>
 
 </html>
