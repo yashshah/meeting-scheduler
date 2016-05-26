@@ -14,8 +14,8 @@ module.exports = function(req, res) {
       });
       req.session.loginToken = jwtToken
     } else {
-      res.send('Error getting token');
-      console.log('Error getting token');
+      res.send('Error getting token', err);
+      console.log('Error getting token', err);
     }
   });
 };
