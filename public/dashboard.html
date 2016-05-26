@@ -222,6 +222,9 @@
             $("#progressBar").hide()
             Materialize.toast('Your preferences has been set succesfully!', 8000)
           }
+          error: function(err) {
+            console.log("Error: ", err)
+          },
         })
       } else {
         Materialize.toast('Error! Please enter all the fields!', 8000)
